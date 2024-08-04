@@ -103,6 +103,11 @@ class LLMType(str, Enum):
     OpenAI = "openai"
     AzureOpenAI = "azure_openai"
 
+    # QWEN
+    Qwen = "qwen"
+    QwenChat = "qwen_chat"
+    QwenEmbedding = "qwen_embedding"
+
     # Chat Completion
     OpenAIChat = "openai_chat"
     AzureOpenAIChat = "azure_openai_chat"

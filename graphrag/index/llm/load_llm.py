@@ -23,6 +23,8 @@ from graphrag.llm import (
     create_openai_embedding_llm,
     create_tpm_rpm_limiters,
 )
+from graphrag.llm.openai.qwen_completion_llm import QwenCompletionLLM
+from graphrag.llm.openai.qwen_embeddings_llm import QwenEmbeddingsLLM
 
 if TYPE_CHECKING:
     from datashaper import VerbCallbacks
@@ -209,8 +211,37 @@ def _load_static_response(
 ) -> CompletionLLM:
     return MockCompletionLLM(config.get("responses", []))
 
+def _load_qwen_llm(
+        on_error: ErrorHandlerFn,
+        cache: LLMCache,
+        config: dict[str, Any],
+        azure=False,
+):
+    log.info(f"Loading Qwen completion LLM with config {config}")
+    return QwenCompletionLLM(config)
+ 
+def _load_qwen_embeddings_llm(
+        on_error: ErrorHandlerFn,
+        cache: LLMCache,
+        config: dict[str, Any],
+        azure=False,
+):
+    log.info(f"Loading Qwen embeddings LLM with config {config}")
+    return QwenEmbeddingsLLM(config)
 
 loaders = {
+    LLMType.Qwen: {
+        "load": _load_qwen_llm,
+        "chat": False
+    },
+    LLMType.QwenChat: {
+        "load": _load_qwen_llm,
+        "chat": True
+    },
+    LLMType.QwenEmbedding: {
+        "load": _load_qwen_embeddings_llm,
+        "chat": False
+    },
     LLMType.OpenAI: {
         "load": _load_openai_completion_llm,
         "chat": False,
